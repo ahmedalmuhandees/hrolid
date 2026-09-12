@@ -4,8 +4,8 @@ import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
   const { user, login } = useAuth();
-  const [email, setEmail] = useState('admin@attendance.local');
-  const [password, setPassword] = useState('Admin@123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -16,7 +16,7 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     try {
-      await login(email, password);
+      await login(email.trim(), password);
     } catch (err: unknown) {
       const msg =
         err && typeof err === 'object' && 'response' in err
@@ -38,7 +38,12 @@ export default function LoginPage() {
         <p className="muted">إدارة المواقع والموظفين وسجلات الحضور والخروج</p>
         <label>
           البريد الإلكتروني
-          <input value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="username"
+            required
+          />
         </label>
         <label>
           كلمة المرور
@@ -46,13 +51,14 @@ export default function LoginPage() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            required
           />
         </label>
         {error && <div className="error">{error}</div>}
         <button type="submit" disabled={loading}>
           {loading ? 'جاري الدخول...' : 'دخول'}
         </button>
-        <p className="hint">admin@attendance.local / Admin@123</p>
       </form>
     </div>
   );
