@@ -1,6 +1,11 @@
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5080';
+const API_BASE = (
+  import.meta.env.VITE_API_BASE ||
+  (import.meta.env.PROD
+    ? 'https://hrsolid.execute-iq.com'
+    : 'http://localhost:5080')
+).replace(/\/$/, '');
 
 export const api = axios.create({
   baseURL: API_BASE,
