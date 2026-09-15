@@ -1,0 +1,6 @@
+/downloads/mawjood.mobileconfig
+  Content-Type: application/x-apple-aspen-config
+
+/downloads/mawjood.apk
+  Content-Type: application/vnd.android.package-archive
+  Content-Disposition: attachment; filename="mawjood.apk"; filename*=UTF-8''%D9%85%D9%88%D8%AC%D9%88%D8%AF.apk
