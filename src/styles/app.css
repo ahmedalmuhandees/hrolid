@@ -179,6 +179,84 @@ button, input { font: inherit; }
   align-items: end;
 }
 
+.field-label {
+  display: block;
+  margin: 4px 0 8px;
+  font-size: 0.92rem;
+}
+
+.check-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.check-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 12px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.check-chip input {
+  width: auto;
+  margin: 0;
+}
+
+.check-chip.on {
+  border-color: var(--primary);
+  background: #ecfdf5;
+  color: var(--primary-2);
+}
+
+.loc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  color: var(--primary);
+  font-size: 0.78rem;
+}
+
+.chip.muted {
+  background: #f3f4f6;
+  color: var(--muted);
+}
+
+.location-editor {
+  background: #f8fbfa;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 14px;
+}
+
+.location-editor h3 {
+  margin: 0 0 4px;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-direction: row;
+}
+
+.checkbox-row input {
+  width: auto;
+}
+
 button {
   border: 0;
   border-radius: 10px;
@@ -198,6 +276,17 @@ button.linkish {
   background: transparent;
   color: var(--primary);
   padding: 0;
+}
+button.danger {
+  background: var(--danger);
+}
+button.danger:hover { background: #912018; }
+
+.row-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .muted { color: var(--muted); margin: 0; }
@@ -282,6 +371,64 @@ tr.selected, tr:hover {
   padding: 8px 0;
   border-bottom: 1px solid var(--border);
 }
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.check-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.check-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #f8fbfb;
+  cursor: pointer;
+}
+
+.check-card.on {
+  border-color: var(--primary);
+  background: #ecfdf5;
+}
+
+.check-card strong { display: block; }
+.check-card small { color: var(--muted); font-size: 0.78rem; }
+.picker-label { font-size: 0.92rem; font-weight: 600; }
+
+.check-inline {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px;
+}
+
+.assign-box {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.assign-box h3 { margin: 0 0 4px; }
 
 .login-wrap {
   min-height: 100vh;

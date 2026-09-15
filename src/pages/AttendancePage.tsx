@@ -41,6 +41,14 @@ export default function AttendancePage() {
         return [row, ...rest];
       });
     });
+    connection.on('attendanceDeleted', (payload: { id: number }) => {
+      setItems((prev) => prev.filter((x) => x.id !== payload.id));
+      setSelected((current) => (current?.id === payload.id ? null : current));
+    });
+    connection.on('employeeDeleted', (payload: { userId: number }) => {
+      setItems((prev) => prev.filter((x) => x.userId !== payload.userId));
+      setSelected((current) => (current?.userId === payload.userId ? null : current));
+    });
 
     connection.start().catch(() => undefined);
     return () => {
@@ -72,6 +80,28 @@ export default function AttendancePage() {
       setError(e instanceof Error ? e.message : 'فشل التصدير');
     } finally {
       setExporting(false);
+    }
+  }
+
+  async function removeRecord(record: Attendance) {
+    const ok = window.confirm(
+      `حذف سجل حضور «${record.employeeName}» بتاريخ ${dayjs(record.checkInAt).format('YYYY-MM-DD')}؟`,
+    );
+    if (!ok) return;
+    setError('');
+    try {
+      await api.delete(`/api/attendance/${record.id}`);
+      setItems((prev) => prev.filter((x) => x.id !== record.id));
+      setSelected((current) => (current?.id === record.id ? null : current));
+    } catch (e: unknown) {
+      const msg =
+        e && typeof e === 'object' && 'response' in e
+          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (e as any).response?.data?.message
+          : e instanceof Error
+            ? e.message
+            : 'فشل الحذف';
+      setError(msg || 'فشل الحذف');
     }
   }
 
@@ -148,6 +178,7 @@ export default function AttendancePage() {
                   <th>المدة</th>
                   <th>صورة</th>
                   <th>الحالة</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -183,6 +214,18 @@ export default function AttendancePage() {
                       <span className={`badge ${a.status === 'Completed' ? 'ok' : 'open'}`}>
                         {statusLabel(a.status)}
                       </span>
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        className="danger"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          void removeRecord(a);
+                        }}
+                      >
+                        حذف
+                      </button>
                     </td>
                   </tr>
                 ))}

@@ -50,6 +50,7 @@ export type Employee = {
   hasFaceRegistered: boolean;
   isActive: boolean;
   createdAt: string;
+  locations: WorkLocation[];
 };
 
 export type Attendance = {

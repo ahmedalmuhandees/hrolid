@@ -34,19 +34,21 @@ export default function LocationsPage() {
   const [lat, setLat] = useState(33.3152);
   const [lng, setLng] = useState(44.3661);
   const [radius, setRadius] = useState(100);
+  const [isActive, setIsActive] = useState(true);
   const [message, setMessage] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
 
   async function load() {
     const { data } = await api.get<WorkLocation[]>('/api/locations');
     setItems(data);
-    const active = data.find((x) => x.isActive) ?? data[0];
-    if (active) {
-      setLat(active.latitude);
-      setLng(active.longitude);
-      setRadius(active.radiusMeters);
-      setName(active.name);
-      setEditingId(active.id);
+    const current = data.find((x) => x.id === editingId) ?? data[0];
+    if (current && editingId === null) {
+      setLat(current.latitude);
+      setLng(current.longitude);
+      setRadius(current.radiusMeters);
+      setName(current.name);
+      setIsActive(current.isActive);
+      setEditingId(current.id);
     }
   }
 
@@ -62,7 +64,7 @@ export default function LocationsPage() {
       latitude: lat,
       longitude: lng,
       radiusMeters: radius,
-      isActive: true,
+      isActive,
     };
     if (editingId) {
       await api.put(`/api/locations/${editingId}`, payload);
@@ -77,8 +79,8 @@ export default function LocationsPage() {
   return (
     <div className="page-grid">
       <section className="panel">
-        <h2>تحديد موقع العمل (Geofence)</h2>
-        <p className="muted">انقر على الخريطة لإدراج النقطة، ثم حدد نصف القطر بالمتر.</p>
+        <h2>مواقع العمل (Geofence)</h2>
+        <p className="muted">أضف أكثر من موقع ثم عيّنها للموظفين. انقر على الخريطة لإدراج النقطة.</p>
         <form className="form" onSubmit={save}>
           <label>
             اسم الموقع
@@ -113,13 +115,22 @@ export default function LocationsPage() {
               onChange={(e) => setRadius(Number(e.target.value))}
             />
           </label>
-          <button type="submit">حفظ الموقع النشط</button>
+          <label className="checkbox-row">
+            <input
+              type="checkbox"
+              checked={isActive}
+              onChange={(e) => setIsActive(e.target.checked)}
+            />
+            موقع نشط يمكن التسجيل منه
+          </label>
+          <button type="submit">{editingId ? 'حفظ التعديلات' : 'حفظ الموقع'}</button>
           <button
             type="button"
             className="secondary"
             onClick={() => {
               setEditingId(null);
               setName('موقع جديد');
+              setIsActive(true);
             }}
           >
             إنشاء كموقع جديد
@@ -138,9 +149,10 @@ export default function LocationsPage() {
                   setLat(x.latitude);
                   setLng(x.longitude);
                   setRadius(x.radiusMeters);
+                  setIsActive(x.isActive);
                 }}
               >
-                {x.name} {x.isActive ? '(نشط)' : ''} — {x.radiusMeters}م
+                {x.name} {x.isActive ? '(نشط)' : '(متوقف)'} — {x.radiusMeters}م
               </button>
             </li>
           ))}
@@ -163,6 +175,18 @@ export default function LocationsPage() {
             }}
           />
           <Marker position={[lat, lng]} />
+          {items.map((x) => (
+            <Circle
+              key={x.id}
+              center={[x.latitude, x.longitude]}
+              radius={x.radiusMeters}
+              pathOptions={{
+                color: x.id === editingId ? '#0f766e' : '#94a3b8',
+                fillColor: x.id === editingId ? '#14b8a6' : '#cbd5e1',
+                fillOpacity: x.id === editingId ? 0.2 : 0.12,
+              }}
+            />
+          ))}
           <Circle
             center={[lat, lng]}
             radius={radius}
